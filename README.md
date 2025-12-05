@@ -6,12 +6,29 @@ Deterministic, auditable, and safe AI behavior for development teams.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Status](https://img.shields.io/badge/status-active%20development-blue.svg)](https://github.com/summonwill/ai-bootstrap-framework)
+[![Works With](https://img.shields.io/badge/works_with-ChatGPT%20%7C%20Claude%20%7C%20Copilot-blue)](https://github.com/summonwill/ai-bootstrap-framework)
+[![Platform](https://img.shields.io/badge/platform-Web%20%7C%20Mobile%20%7C%20IDE-green)](https://github.com/summonwill/ai-bootstrap-framework)
+
+---
+
+## ✨ Works Everywhere - Zero Setup
+
+**Drop one file into ChatGPT, Claude, or any LLM → Get instant governance**
+
+- ✅ **Browser LLMs:** ChatGPT, Claude, Gemini, Perplexity
+- ✅ **Mobile Apps:** ChatGPT app, Claude app + GitHub mobile
+- ✅ **IDE Assistants:** GitHub Copilot, Cursor, Windsurf, Cody
+- ✅ **No Installation:** Just upload `AI_RULES_AND_BEST_PRACTICES.md`
+
+**Try it now:** Download the framework file, upload to ChatGPT, and watch it generate governance files for your project. [Get Started →](#-quick-start)
 
 ---
 
 ## 🚀 What is AI Bootstrap Framework?
 
 AI Bootstrap Framework is an open-source governance system for AI-assisted development. It provides deterministic, auditable workflows that prevent common AI coding pitfalls while enabling safe automation at scale.
+
+**Works with ANY AI assistant** - from browser-based ChatGPT to IDE-integrated GitHub Copilot.
 
 **Key Features:**
 - 🔒 **Governance-First Architecture** - Built-in safety checks and audit trails
@@ -20,6 +37,7 @@ AI Bootstrap Framework is an open-source governance system for AI-assisted devel
 - ⚠️ **Risk Classification** - Automatic detection of high-risk changes
 - 🔍 **Multi-Mind Verification** - Internal validation before execution
 - 📊 **Structured Logging** - Complete audit trail for compliance
+- 📱 **Universal Access** - Works in browser, mobile, and IDE equally well
 
 ---
 
@@ -36,6 +54,7 @@ AI coding assistants are powerful but unpredictable. They can:
 - Safety mechanisms for high-risk operations
 - Session continuity with persistent state files
 - Audit trails for compliance and debugging
+- **Platform independence** - same governance everywhere
 
 ---
 
@@ -79,26 +98,53 @@ This repository contains:
 
 ## 🚀 Quick Start
 
-### For Individual Developers
+### 🌐 For Browser/Mobile Users (ChatGPT, Claude, Gemini)
+
+**The fastest way to get started - zero installation required!**
+
+1. **Download the framework file:**
+   - Click [`AI_RULES_AND_BEST_PRACTICES.md`](AI_RULES_AND_BEST_PRACTICES.md) and download it
+   
+2. **Upload to your preferred LLM:**
+   - Open ChatGPT, Claude, or Gemini
+   - Upload the `AI_RULES_AND_BEST_PRACTICES.md` file
+   - Say: "Please bootstrap governance for my project"
+
+3. **Download generated files:**
+   - AI will generate `SESSION_NOTES.md`, `TODO.md`, `AI_CONTEXT_INDEX.md`
+   - Download all files as artifacts
+   - Commit them to your repository
+
+4. **Continue working:**
+   - Next session: Upload ALL 4 files to reconstruct context
+   - Work on your project with full governance
+   - Download updated files at session end and commit
+
+**Mobile workflow:** Use GitHub mobile app + ChatGPT/Claude mobile app for on-the-go governed development!
+
+[📱 Detailed mobile instructions →](docs/ARTIFACT_OUTPUT_TEMPLATES.md#mobile-workflow-example)
+
+---
+
+### 💻 For IDE Users (VS Code, Cursor, Windsurf)
 
 1. **Add the governance framework to your project:**
    ```bash
    # Clone this repository
    git clone https://github.com/summonwill/ai-bootstrap-framework.git
    
-   # Copy core files to your project
+   # Copy core file to your project
    cp ai-bootstrap-framework/AI_RULES_AND_BEST_PRACTICES.md your-project/
-   cp ai-bootstrap-framework/templates/* your-project/
    ```
 
-2. **Initialize governance files:**
-   - Create `SESSION_NOTES.md` for work logs
-   - Create `TODO.md` for task tracking
-   - Create `AI_CONTEXT_INDEX.md` for project mapping
+2. **Let your AI assistant bootstrap:**
+   - Your IDE AI (GitHub Copilot, etc.) will read the file
+   - It will auto-generate `SESSION_NOTES.md`, `TODO.md`, `AI_CONTEXT_INDEX.md`
+   - All files are created directly in your file system
 
-3. **Configure your AI assistant:**
-   - Instruct it to read `AI_RULES_AND_BEST_PRACTICES.md` at session start
-   - Direct it to update session notes and TODO after each change
+3. **Start working:**
+   - AI assistant follows governance automatically
+   - Session notes and TODO update after each change
    - Enable multi-mind verification for critical operations
 
 ### For Teams

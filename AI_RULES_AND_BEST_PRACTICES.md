@@ -12,6 +12,17 @@
   - [Table of Contents](#table-of-contents)
   - [0. Purpose and Goals](#0-purpose-and-goals)
   - [1. Boot Protocol (Reset Vector)](#1-boot-protocol-reset-vector)
+    - [1.1 For IDE Users (VS Code, Cursor, Windsurf, etc.)](#11-for-ide-users-vs-code-cursor-windsurf-etc)
+    - [1.2 For Browser/Mobile LLM Users (ChatGPT, Claude, Gemini, etc.)](#12-for-browsermobile-llm-users-chatgpt-claude-gemini-etc)
+      - [First Session (Bootstrap):](#first-session-bootstrap)
+      - [Subsequent Sessions (Continuity):](#subsequent-sessions-continuity)
+      - [Mobile Optimization Tips:](#mobile-optimization-tips)
+      - [Output Format for Artifacts](#output-format-for-artifacts)
+        - [Method 1: Claude Artifacts (Preferred)](#method-1-claude-artifacts-preferred)
+        - [Method 2: ChatGPT Python Script with Zip Download (Recommended)](#method-2-chatgpt-python-script-with-zip-download-recommended)
+        - [Method 3: Copy/Paste Fallback (Universal)](#method-3-copypaste-fallback-universal)
+        - [Mobile Considerations](#mobile-considerations)
+    - [1.3 General Rule (All Platforms)](#13-general-rule-all-platforms)
   - [2. Core Principles](#2-core-principles)
   - [3. Roles and Responsibilities](#3-roles-and-responsibilities)
     - [3.1 Engineer Owner / Prompt Engineer](#31-engineer-owner--prompt-engineer)
@@ -81,6 +92,8 @@ This is the **first file any AI agent must read** before acting.
 
 Whenever an AI agent is invoked to work in this project, it MUST follow this boot sequence:
 
+### 1.1 For IDE Users (VS Code, Cursor, Windsurf, etc.)
+
 1. **Read this file (`AI_RULES_AND_BEST_PRACTICES.md`) fully.**  
    Understand constraints, roles, and required behaviors.
 
@@ -91,7 +104,7 @@ Whenever an AI agent is invoked to work in this project, it MUST follow this boo
    - `/archive/` directory (if present)
 
 3. **If any required files are missing:**
-   - Follow the **Auto-Generation Protocol** (Section 9) to create minimal valid versions.
+   - Follow the **Auto-Generation Protocol** (Section 9) to create minimal valid versions directly in the file system.
 
 4. **Confirm current task input:**
    - Understand the user's request and how it fits into the project context.
@@ -102,6 +115,175 @@ Whenever an AI agent is invoked to work in this project, it MUST follow this boo
 6. **Only after the above may the agent:**
    - Read or modify code, docs, or state files.
    - Call tools, run scripts, or propose changes.
+
+### 1.2 For Browser/Mobile LLM Users (ChatGPT, Claude, Gemini, etc.)
+
+**IMPORTANT:** Browser and mobile LLM users cannot directly access the file system. This protocol adapts the governance framework to work with file uploads and downloadable artifacts.
+
+#### First Session (Bootstrap):
+
+1. **User uploads `AI_RULES_AND_BEST_PRACTICES.md` to the chat.**
+
+2. **Agent reads the file and checks what files are missing:**
+   - If `AI_CONTEXT_INDEX.md`, `TODO.md`, `SESSION_NOTES.md` don't exist yet, agent MUST generate them.
+
+3. **Agent generates missing files using Section 9 (Auto-Generation Protocol):**
+   - Create minimal valid versions of each file.
+   - Output each file as a **downloadable artifact** with clear filename.
+   - Provide instructions: "Download these files and commit them to your repository."
+
+4. **Agent proceeds with the user's task:**
+   - Follow the same planning and execution rules as IDE users.
+   - At session end, output **updated versions** of all modified files as downloadable artifacts.
+
+5. **User downloads artifacts and commits to repository.**
+
+#### Subsequent Sessions (Continuity):
+
+1. **User uploads ALL governance files at session start:**
+   - `AI_RULES_AND_BEST_PRACTICES.md` (required)
+   - `AI_CONTEXT_INDEX.md` (if exists)
+   - `TODO.md` (if exists)
+   - `SESSION_NOTES.md` (if exists)
+   - Any task-specific state files referenced in `AI_CONTEXT_INDEX.md`
+
+2. **Agent reconstructs full project context from uploaded files:**
+   - Read `SESSION_NOTES.md` to understand recent work.
+   - Read `TODO.md` for active tasks and priorities.
+   - Read `AI_CONTEXT_INDEX.md` for project structure.
+
+3. **Agent proceeds with work following all standard rules.**
+
+4. **At session end, agent outputs updated files as copyable text blocks:**
+   - Modified `SESSION_NOTES.md` (with new session entry)
+   - Modified `TODO.md` (with updated task status)
+   - Modified `AI_CONTEXT_INDEX.md` (if structure changed)
+   - Any new or modified code files
+   - Clear instructions: "Copy these files and save them to your repository."
+   - **Note:** Most browser LLMs output files as text in code blocks. Users copy the content and save manually as `.md` files.
+
+#### Mobile Optimization Tips:
+
+- **Use GitHub mobile app** to view/download governance files before starting a chat session.
+- **Use ChatGPT/Claude mobile app** to upload files (most support file uploads).
+- **Download artifacts** from the chat (LLMs output as files/code blocks).
+- **Use GitHub mobile app** to commit updated files back to your repository.
+- **Consider using GitHub Codespaces** on mobile for direct file system access.
+
+#### Output Format for Artifacts
+
+When outputting files for browser/mobile users, the agent SHOULD use the best available method for the platform:
+
+##### Method 1: Claude Artifacts (Preferred)
+
+**For Claude users:**
+- Generate each file as a separate Artifact
+- Claude will provide a "Download" button for each artifact
+- User clicks download to get actual `.md` files
+- This is the best user experience
+
+**Agent instructions:**
+1. Use artifact creation syntax for each file
+2. Label artifacts clearly: "AI_CONTEXT_INDEX.md", "TODO.md", "SESSION_NOTES.md"
+3. Provide download instructions after all artifacts are created
+
+##### Method 2: ChatGPT Python Script with Zip Download (Recommended)
+
+**For ChatGPT Code Interpreter users:**
+- Generate a Python script that creates a downloadable zip file
+- User gets `governance_files.zip` containing all files
+- One-click download, no copy/paste needed
+
+**Agent instructions:**
+1. Generate complete file contents as Python strings
+2. Use this template:
+
+```python
+import zipfile
+from io import BytesIO
+
+# Governance file contents
+files = {
+    'AI_CONTEXT_INDEX.md': """# AI Context Index
+
+[Complete file content here...]
+""",
+    
+    'TODO.md': """# Project TODO
+
+[Complete file content here...]
+""",
+    
+    'SESSION_NOTES.md': """# Session Notes
+
+[Complete file content here...]
+"""
+}
+
+# Create zip file
+zip_buffer = BytesIO()
+with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+    for filename, content in files.items():
+        zip_file.writestr(filename, content)
+
+# Write to downloadable file
+with open('governance_files.zip', 'wb') as f:
+    f.write(zip_buffer.getvalue())
+
+print("✅ governance_files.zip created!")
+print("📥 Click the download button to save")
+print("")
+print("📦 Contains:")
+for filename in files.keys():
+    print(f"  - {filename}")
+print("")
+print("🚀 Next steps:")
+print("  1. Download governance_files.zip")
+print("  2. Extract files to your project root")
+print("  3. Commit to repository")
+print("  4. Next session: Upload all 4 governance files")
+```
+
+3. Execute the script to create downloadable zip
+4. Provide download instructions
+
+##### Method 3: Copy/Paste Fallback (Universal)
+
+**For other LLMs or when Methods 1-2 are unavailable:**
+- Output files as text in markdown code blocks
+- Users copy text and save manually
+
+**Agent instructions:**
+1. Clearly label each file with a header:
+   ```
+   📋 FILE: SESSION_NOTES.md (Copy this text and save as SESSION_NOTES.md)
+   ```
+
+2. Output the complete file contents in a markdown code block
+
+3. Provide a checklist:
+   ```
+   ✅ COPY & SAVE CHECKLIST
+   
+   For each file above:
+   1. Click "Copy code" button (or select and copy text)
+   2. Open text editor or GitHub
+   3. Save as filename.md in your project root
+   4. Commit to repository
+   
+   Next session: Upload all 4 files to continue
+   ```
+
+##### Mobile Considerations
+
+- **Mobile apps:** Most support copy/paste from code blocks
+- **Claude mobile:** May support artifact downloads
+- **ChatGPT mobile:** Python script method works if Code Interpreter is enabled
+- **GitHub mobile:** Can create/edit files directly in repository
+
+---
+
+### 1.3 General Rule (All Platforms)
 
 If at any point the agent is unsure how to proceed under these rules, it MUST stop and request clarification from the engineer.
 
