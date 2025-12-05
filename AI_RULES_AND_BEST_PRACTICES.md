@@ -1,14 +1,57 @@
 # AI Rules and Best Practices  
-**Version:** 1.2  
+**Version:** 1.3  
 **Status:** Draft  
 **Required Location:** This file MUST exist at the **project root** as `AI_RULES_AND_BEST_PRACTICES.md`.  
 **Scope:** Defines how AI agents must behave when operating within this repository or workspace.
 
 ---
 
+## 🔧 AI QUICKSTART (Browser/Mobile Chat Environments)
+
+> **If you are an AI system** in a browser/mobile chat (ChatGPT, Claude, Gemini, etc.) and this file is provided to you by the user:
+>
+> ### For NEW projects (no governance files yet):
+> 1. **Read this file completely** (especially Section 9: Auto-Generation Protocol)
+> 2. **Detect missing governance files:** Check if `AI_CONTEXT_INDEX.md`, `TODO.md`, `SESSION_NOTES.md`, or `SESSION_BUFFER.md` are missing
+> 3. **Generate minimal valid versions** of missing files exactly as defined in Section 9
+> 4. **Export files using best available method:**
+>    - **If Python/Code Interpreter available:** Create `governance_files.zip` containing all governance files (Method 2, Section 1.2)
+>    - **If Python unavailable:** Output each file in clearly labeled markdown code blocks (Method 3, Section 1.2)
+> 5. **Explain to user:**
+>    - Which files were created
+>    - Where to store them (project root)
+>    - How to commit them to version control
+>    - What to upload in next session
+>
+> ### For EXISTING projects (governance files uploaded):
+> 1. **Validate uploaded files (Section 1.2 step 2):**
+>    - Confirm all expected files are present
+>    - Check for malformed markdown structure
+>    - Warn if `SESSION_NOTES.md` is stale (> 7 days old)
+>    - Detect corruption or empty files
+> 2. **Reconstruct project context** from uploaded governance files
+> 3. **Summarize current state:**
+>    - Last session's work
+>    - Current TODO items
+>    - Any validation warnings
+> 4. **Ask:** "What should we work on today?" (unless user already specified)
+>
+> ### At END of session:
+> 1. **Update governance files:**
+>    - Add session entry to `SESSION_NOTES.md`
+>    - Update `TODO.md` (mark completed tasks, add new ones)
+>    - Collapse `SESSION_BUFFER.md` into `SESSION_NOTES.md` (Section 8.2 step 4)
+> 2. **Export updated files** using best available method (zip or markdown blocks)
+> 3. **Remind user** to commit changes and upload all files next session
+>
+> **Do this automatically** on first contact without waiting for additional instructions, unless the user explicitly instructs you not to (Section 6.1 applies for ambiguous situations only).
+
+---
+
 ## Table of Contents
 
 - [AI Rules and Best Practices](#ai-rules-and-best-practices)
+  - [🔧 AI QUICKSTART (Browser/Mobile Chat Environments)](#-ai-quickstart-browsermobile-chat-environments)
   - [Table of Contents](#table-of-contents)
   - [0. Purpose and Goals](#0-purpose-and-goals)
   - [1. Boot Protocol (Reset Vector)](#1-boot-protocol-reset-vector)
@@ -52,8 +95,9 @@
     - [9.1 `AI_CONTEXT_INDEX.md` (Project Context Map)](#91-ai_context_indexmd-project-context-map)
     - [9.2 `TODO.md` (Task Registry)](#92-todomd-task-registry)
     - [9.3 `SESSION_NOTES.md` (Temporal Log)](#93-session_notesmd-temporal-log)
-    - [9.4 `/archive/` Directory](#94-archive-directory)
-    - [9.5 Task-Specific State Files](#95-task-specific-state-files)
+    - [9.4 `SESSION_BUFFER.md` (Working Memory)](#94-session_buffermd-working-memory)
+    - [9.5 `/archive/` Directory](#95-archive-directory)
+    - [9.6 Task-Specific State Files](#96-task-specific-state-files)
   - [10. Logging, Audit, and Archive Rules](#10-logging-audit-and-archive-rules)
     - [10.1 When to Archive](#101-when-to-archive)
     - [10.2 Auditability](#102-auditability)
@@ -145,9 +189,17 @@ Whenever an AI agent is invoked to work in this project, it MUST follow this boo
    - `AI_CONTEXT_INDEX.md` (if exists)
    - `TODO.md` (if exists)
    - `SESSION_NOTES.md` (if exists)
+   - `SESSION_BUFFER.md` (if exists from previous session)
    - Any task-specific state files referenced in `AI_CONTEXT_INDEX.md`
 
-2. **Agent reconstructs full project context from uploaded files:**
+2. **Agent validates uploaded files:**
+   - Confirm all expected files are present
+   - Check for malformed markdown structure
+   - Validate that SESSION_NOTES.md has recent entries (warn if > 7 days old)
+   - Detect if files are unexpectedly empty or corrupted
+   - If problems found: Suggest regeneration or fixes before proceeding
+
+3. **Agent reconstructs full project context from uploaded files:**
    - Read `SESSION_NOTES.md` to understand recent work.
    - Read `TODO.md` for active tasks and priorities.
    - Read `AI_CONTEXT_INDEX.md` for project structure.
@@ -167,6 +219,106 @@ Whenever an AI agent is invoked to work in this project, it MUST follow this boo
 - **Use GitHub mobile app** to view/download governance files before starting a chat session.
 - **Use ChatGPT/Claude mobile app** to upload files (most support file uploads).
 - **Download artifacts** from the chat (LLMs output as files/code blocks).
+- **Mobile-friendly:** This governance system works seamlessly on phones and tablets.
+
+#### Reusable Prompt Templates
+
+To make sessions predictable and automatic, use these standardized prompts:
+
+##### Bootstrap Prompt (New Projects)
+
+```
+You are an AI agent working in a governed project.
+
+I am uploading AI_RULES_AND_BEST_PRACTICES.md - treat this as the binding operating system for all work.
+
+This is a **new project** with no governance files yet.
+
+Follow these steps automatically:
+
+1. Read AI_RULES_AND_BEST_PRACTICES.md completely
+2. Following Section 9 (Auto-Generation Protocol), generate minimal valid versions of:
+   - AI_CONTEXT_INDEX.md
+   - TODO.md
+   - SESSION_NOTES.md
+   - SESSION_BUFFER.md (for this active session)
+3. If Python/Code Interpreter is available:
+   - Use Method 2 (Section 1.2) to create governance_files.zip
+   - Include all 4 files in the zip
+4. If Python unavailable:
+   - Output each file as markdown code blocks with clear headers
+5. Explain:
+   - Which files were created
+   - Where to put them (project root)
+   - How to commit them
+   - What to upload in the next session
+
+If anything is fundamentally unclear, apply Section 6.1 (ask for clarification). Otherwise, proceed automatically.
+```
+
+**When to use:** First time using this governance framework in a new project.
+
+##### Continuation Prompt (Existing Projects)
+
+```
+Continuing a governed project.
+
+Uploading current governance files:
+- AI_RULES_AND_BEST_PRACTICES.md (operating system)
+- AI_CONTEXT_INDEX.md
+- TODO.md
+- SESSION_NOTES.md
+- SESSION_BUFFER.md (if exists from last session)
+
+Steps:
+
+1. **Validate files (Section 1.2 step 2):**
+   - Confirm all expected files present
+   - Check markdown structure
+   - Warn if SESSION_NOTES.md > 7 days old
+   - Report any corruption
+
+2. **Reconstruct context:**
+   - Review last session's work
+   - Check current TODO items
+   - Understand project state
+
+3. **Report status:**
+   - Summary of current state
+   - Pending tasks
+   - Any validation warnings
+
+4. **Ask:** What should we work on today?
+```
+
+**When to use:** Starting any session after the initial bootstrap.
+
+##### Session Close Prompt (End of Work)
+
+```
+Close this session per governance rules (Section 8.2).
+
+Steps:
+
+1. Update governance files:
+   - Add new session entry to SESSION_NOTES.md (date, summary, files touched, risks)
+   - Update TODO.md (mark completed tasks, add follow-ups)
+   - Update AI_CONTEXT_INDEX.md (if structure changed)
+   - Collapse SESSION_BUFFER.md into SESSION_NOTES.md (Section 8.2 step 4)
+
+2. Export updated files:
+   - If Python available: Create governance_files.zip with all updated files
+   - If Python unavailable: Output each file as markdown code blocks
+
+3. Provide instructions:
+   - Which files were updated
+   - How to commit them (suggest git commands)
+   - What to upload next session
+```
+
+**When to use:** End of every work session to capture state changes.
+
+**Note:** These prompts are **templates** - copy/paste and adjust project names or specifics as needed.
 - **Use GitHub mobile app** to commit updated files back to your repository.
 - **Consider using GitHub Codespaces** on mobile for direct file system access.
 
@@ -702,6 +854,11 @@ At the **end** of each session, the agent MUST:
    - Mark completed items
    - Add new follow-up tasks
 3. Update `AI_CONTEXT_INDEX.md` if new areas were introduced.
+4. **Collapse `SESSION_BUFFER.md` into `SESSION_NOTES.md`** (if buffer exists):
+   - Review buffer "Decisions to Commit" section
+   - Add important decisions and outcomes to permanent SESSION_NOTES.md entry
+   - Discard temporary experiments, failed attempts, and draft notes
+   - Clear buffer or mark for archive (fresh start next session)
 
 ### 8.3 Version Control Integration
 
@@ -835,7 +992,59 @@ Chronological log of AI and engineer work sessions.
 
 Each new session appends a new section at the bottom (increment session number).
 
-### 9.4 `/archive/` Directory
+### 9.4 `SESSION_BUFFER.md` (Working Memory)
+
+**Purpose:** Temporary workspace for active session thoughts, experiments, and draft notes.
+
+**When to create:**
+- Long multi-hour sessions
+- Experimental work with uncertain outcomes
+- Complex multi-step tasks requiring working notes
+- When session needs "scratch paper" separate from permanent record
+
+**Lifecycle:**
+1. **Created at session start** (if not present from previous session)
+2. **Agent writes drafts** during session:
+   - Experiments and trial approaches
+   - Temporary thoughts and reasoning
+   - Questions to resolve
+   - Draft solutions before committing
+3. **At session end** (critical step):
+   - Collapse buffer into permanent `SESSION_NOTES.md` entry
+   - Only keep important decisions and final outcomes
+   - Clear buffer or archive for next session
+
+**Format:**
+
+```md
+# Session Buffer - [Date]
+
+## Working Notes
+
+[Agent uses this section for drafts, experiments, temporary thoughts]
+
+## Decisions to Commit
+
+[Final decisions that will go into SESSION_NOTES.md]
+
+## Questions / Uncertainties
+
+[Items requiring engineer input]
+
+## Experiments
+
+[Trial approaches, test results, failed attempts]
+```
+
+**Benefits:**
+- Keeps SESSION_NOTES.md clean and historical
+- Allows messy thinking without polluting permanent record
+- Enables longer sessions without context drift
+- Separates "work in progress" from "work completed"
+
+**Browser/Mobile users:** SESSION_BUFFER.md is included in zip exports and should be uploaded in subsequent sessions if it exists.
+
+### 9.5 `/archive/` Directory
 
 If no archive directory exists, the agent MAY create `/archive/` as:
 
@@ -859,7 +1068,7 @@ This folder stores older or rotated versions of project state files, such as:
 Do not modify archived files except to add explanatory notes.
 ```
 
-### 9.5 Task-Specific State Files
+### 9.6 Task-Specific State Files
 
 For complex or long-running tasks that need their own state, the agent MAY create task-specific state files, for example:
 

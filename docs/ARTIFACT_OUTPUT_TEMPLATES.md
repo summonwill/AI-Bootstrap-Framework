@@ -82,6 +82,7 @@ files = {
 - `AI_RULES_AND_BEST_PRACTICES.md` - Governance framework
 - `TODO.md` - Task registry
 - `SESSION_NOTES.md` - Work log
+- `SESSION_BUFFER.md` - Working memory (active sessions only)
 
 [... complete content ...]
 """,
@@ -105,6 +106,25 @@ This file tracks tasks for engineers and AI agents.
 - Goal: Initialize governance framework
 
 [... complete content ...]
+""",
+    
+    'SESSION_BUFFER.md': """# Session Buffer - 2025-12-05
+
+## Working Notes
+
+[Active session working notes go here]
+
+## Decisions to Commit
+
+[Final decisions to move to SESSION_NOTES.md]
+
+## Questions / Uncertainties
+
+[Items requiring engineer input]
+
+## Experiments
+
+[Trial approaches and test results]
 """
 }
 
@@ -129,15 +149,16 @@ print("🚀 Next steps:")
 print("  1. Download governance_files.zip")
 print("  2. Extract files to your project root")
 print("  3. Commit to repository:")
-print("     git add AI_CONTEXT_INDEX.md TODO.md SESSION_NOTES.md")
+print("     git add AI_CONTEXT_INDEX.md TODO.md SESSION_NOTES.md SESSION_BUFFER.md")
 print("     git commit -m '[AI] Initialize governance framework'")
 print("     git push")
 print("")
-print("  4. Next session: Upload all 4 governance files:")
+print("  4. Next session: Upload all governance files:")
 print("     - AI_RULES_AND_BEST_PRACTICES.md")
 print("     - AI_CONTEXT_INDEX.md")
 print("     - TODO.md")
 print("     - SESSION_NOTES.md")
+print("     - SESSION_BUFFER.md (if continuing same session)")
 ````
 
 ### User Experience
